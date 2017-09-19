@@ -1,4 +1,4 @@
-package com.crealytics.google.adwords
+package com.bluekiri.google.adwords.v201708
 
 import com.google.api.ads.common.lib.auth.OfflineCredentials
 import org.apache.spark.sql.SQLContext
@@ -15,32 +15,24 @@ class DefaultSource
 
   /**
     * Creates a new relation for retrieving data from Google AdWords
-    * Parameters must include clientId, clientSecret, developerToken, refreshToken, reportType, clientCustomerId
+    * Parameters must include reportType, during
     * Optionally you can also specify userAgent and during
     */
-  override def createRelation(
-                               sqlContext: SQLContext,
-                               parameters: Map[String, String]): AdWordsRelation = {
+  override def createRelation(sqlContext: SQLContext,
+                              parameters: Map[String, String]): AdWordsRelation = {
 
     // gather parameters
-    val clientId = checkParameter(parameters, "clientId")
-    val clientSecret = checkParameter(parameters, "clientSecret")
-    val developerToken = checkParameter(parameters, "developerToken")
-    val refreshToken = checkParameter(parameters, "refreshToken")
     val reportType = checkParameter(parameters, "reportType")
-    val clientCustomerId = checkParameter(parameters, "clientCustomerId")
-
 
     val userAgent = parameterOrDefault(parameters, "userAgent", DEFAULT_USER_AGENT)
     val duringStmt = parameterOrDefault(parameters, "during", DEFAULT_DURING)
     // Our OAuth2 Credential
     val credential = new OfflineCredentials.Builder()
       .forApi(OfflineCredentials.Api.ADWORDS)
-      .withClientSecrets(clientId, clientSecret)
-      .withRefreshToken(refreshToken)
+      .fromFile()
       .build.generateCredential
     // create relation
-    AdWordsRelation(credential, developerToken, clientCustomerId, userAgent, reportType, duringStmt)(sqlContext)
+    AdWordsRelation(credential, userAgent, reportType, duringStmt)(sqlContext)
   }
 
   // Forces a Parameter to exist, otherwise an exception is thrown.

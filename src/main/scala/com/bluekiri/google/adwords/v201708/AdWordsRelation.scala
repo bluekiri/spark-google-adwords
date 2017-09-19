@@ -1,4 +1,4 @@
-package com.crealytics.google.adwords
+package com.bluekiri.google.adwords.v201708
 
 import java.math.BigDecimal
 import java.sql.{Date, Timestamp}
@@ -14,14 +14,17 @@ import org.apache.spark.sql.types._
 import scala.util.{Try, Success}
 
 case class AdWordsRelation(
-  credential: Credential, developerToken: String, clientCustomerId: String,
-  userAgent: String, reportType: String, duringStmt: String)
-  (@transient val sqlContext: SQLContext)
+  credential: Credential,
+  userAgent: String,
+  reportType: String,
+  duringStmt: String)(@transient val sqlContext: SQLContext)
 extends BaseRelation with TableScan with PrunedScan with PrunedFilteredScan {
+
   private val client =
-    new AdWordsClient(credential, developerToken, userAgent, clientCustomerId)
+    new AdWordsClient(credential)
 
   val googleSchema = client.getFieldsForReportType(reportType)
+
   override val schema: StructType = googleSchema.foldLeft(new StructType) {
     case (struct, column) =>
       struct.add(column.getFieldName, sparkDataTypeForGoogleDataType(column.getFieldType))
@@ -39,12 +42,11 @@ extends BaseRelation with TableScan with PrunedScan with PrunedFilteredScan {
     val cols = if (columns.isEmpty) Array[String](schema.apply(0).name) else columns
     // create the query
     val conditionStmt = if (filters.nonEmpty) s"WHERE ${combineFilters(filters)}" else ""
-    s"""
-    SELECT ${cols.mkString(", ")}
-    FROM $reportType
-    $conditionStmt
-    DURING $duringStmt
-    """
+    s"""|SELECT ${cols.mkString(", ")}
+        |FROM $reportType
+        |$conditionStmt
+        |DURING $duringStmt"""
+    .stripMargin
   }
 
   // Extracts a subset of Columns of the Table Schema
@@ -94,7 +96,7 @@ extends BaseRelation with TableScan with PrunedScan with PrunedFilteredScan {
     case "Money" => "DOUBLE"
     case "Double" => "DOUBLE"
     case "Long" => "LONG"
-    case "Date" => "TIMESTAMP"
+    case "Date" => "DATE"
     case "Enum" => "STRING"
     case "DayOfWeek" => "INTEGER"
     case "Integer" => "INTEGER"
@@ -111,7 +113,8 @@ extends BaseRelation with TableScan with PrunedScan with PrunedFilteredScan {
 
   // Cast a String to a Spark Data Type
   private def castTo(datum: String, castType: DataType): Any = {
-    castType match {
+    if (datum == "--") null
+    else castType match {
       case _: ByteType => datum.toByte
       case _: ShortType => datum.toShort
       case _: IntegerType => datum.toInt
@@ -122,7 +125,7 @@ extends BaseRelation with TableScan with PrunedScan with PrunedFilteredScan {
         .getOrElse(NumberFormat.getInstance(Locale.getDefault).parse(datum).doubleValue())
       case _: BooleanType => datum.toBoolean
       case _: DecimalType => new BigDecimal(datum.replaceAll(",", ""))
-      case _: TimestampType => Timestamp.valueOf(datum)
+      case _: TimestampType => Try(Timestamp.valueOf(datum)).getOrElse(null)
       case _: DateType => Date.valueOf(datum)
       case _: StringType => datum
       case _ => throw new RuntimeException(s"Unsupported type: ${castType.typeName}")

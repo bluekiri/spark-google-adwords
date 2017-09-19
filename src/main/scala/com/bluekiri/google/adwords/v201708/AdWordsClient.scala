@@ -1,26 +1,22 @@
-package com.crealytics.google.adwords
+package com.bluekiri.google.adwords.v201708
 
 import java.util.zip.GZIPInputStream
 import javax.xml.parsers.DocumentBuilderFactory
 
 import com.google.api.ads.adwords.axis.factory.AdWordsServices
-import com.google.api.ads.adwords.axis.v201702.cm.{ReportDefinitionField, ReportDefinitionReportType, ReportDefinitionServiceInterface}
+import com.google.api.ads.adwords.axis.v201708.cm.{ReportDefinitionField, ReportDefinitionReportType, ReportDefinitionServiceInterface}
 import com.google.api.ads.adwords.lib.client.AdWordsSession
-import com.google.api.ads.adwords.lib.jaxb.v201702.DownloadFormat
-import com.google.api.ads.adwords.lib.utils.v201702.ReportDownloader
-import com.google.api.ads.common.lib.auth.OfflineCredentials
+import com.google.api.ads.adwords.lib.jaxb.v201708.DownloadFormat
+import com.google.api.ads.adwords.lib.utils.v201708.ReportDownloader
 import com.google.api.client.auth.oauth2.Credential
 
-class AdWordsClient(credential: Credential,
-                    developerToken: String, userAgent: String, clientCustomerId: String) {
+class AdWordsClient(credential: Credential) {
 
   // The Adwords API Session
   private lazy val session =
     new AdWordsSession.Builder()
-      .withDeveloperToken(developerToken)
-      .withUserAgent(userAgent)
+      .fromFile()
       .withOAuth2Credential(credential)
-      .withClientCustomerId(clientCustomerId)
       .build
 
   // Factory for all AdWords Services
