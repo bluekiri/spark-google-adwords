@@ -12,7 +12,7 @@ You can link against this library in your program at the following coordinates:
 ```
 groupId: com.bluekiri
 artifactId: spark-google-adwords_2.11
-version: 3.7.0.1.0-SNAPSHOT
+version: 3.15.1.1.0-SNAPSHOT
 ```
 
 ## Features
@@ -30,7 +30,7 @@ import org.apache.spark.sql.SQLContext
 
 val sqlContext = new SQLContext(sc)
 val df = sqlContext.read
-    .format("com.bluekiri.google.adwords.v201708")
+    .format("com.bluekiri.google.adwords.v201806")
     .option("reportType", "SHOPPING_PERFORMANCE_REPORT")
     .option("during", "LAST_30_DAYS")
     .load()
