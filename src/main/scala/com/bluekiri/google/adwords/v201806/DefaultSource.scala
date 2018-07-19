@@ -1,4 +1,4 @@
-package com.bluekiri.google.adwords.v201708
+package com.bluekiri.google.adwords.v201806
 
 import com.google.api.ads.common.lib.auth.OfflineCredentials
 import org.apache.spark.sql.SQLContext

@@ -1,4 +1,4 @@
-package com.bluekiri.google.adwords.v201708
+package com.bluekiri.google.adwords.v201806
 
 import java.math.BigDecimal
 import java.sql.{Date, Timestamp}
@@ -11,7 +11,7 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.sources._
 import org.apache.spark.sql.types._
 
-import scala.util.{Try, Success}
+import scala.util.{Success, Try}
 
 case class AdWordsRelation(
   credential: Credential,

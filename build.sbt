@@ -1,6 +1,6 @@
 name := "spark-google-adwords"
 
-version := "3.7.0.1.0-SNAPSHOT"
+version := "3.15.1.1.0-SNAPSHOT"
 
 organization := "com.bluekiri"
 
@@ -10,7 +10,7 @@ scalaVersion := crossScalaVersions.value.head
 
 spName := "bluekiri/spark-google-adwords"
 
-sparkVersion := "2.1.0"
+sparkVersion := "2.2.1"
 
 val testSparkVersion = settingKey[String]("The version of Spark to test against.")
 
@@ -19,8 +19,8 @@ testSparkVersion := sys.props.get("spark.testVersion").getOrElse(sparkVersion.va
 sparkComponents := Seq("core", "sql")
 
 libraryDependencies ++= Seq(
-  "com.google.api-ads" % "ads-lib" % "3.7.0",
-  "com.google.api-ads" % "adwords-axis" % "3.7.0"
+  "com.google.api-ads" % "ads-lib" % "3.15.1",
+  "com.google.api-ads" % "adwords-axis" % "3.15.1"
 )
 
 // This is necessary because of how we explicitly specify Spark dependencies
@@ -37,9 +37,7 @@ credentials += Credentials(Path.userHome / ".sbt" / "credentials" / "myget")
 
 publishTo := Some("MyGet - java" at "https://logitravel.myget.org/F/java/maven/")
 
-isSnapshot <<= version { v =>
-  if (v.endsWith("SNAPSHOT")) true else false
-}
+isSnapshot := version.value.endsWith("SNAPSHOT")
 
 // Skip tests during assembly
 test in assembly := {}

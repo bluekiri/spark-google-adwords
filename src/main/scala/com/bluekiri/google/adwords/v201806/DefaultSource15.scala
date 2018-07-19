@@ -1,4 +1,4 @@
-package com.bluekiri.google.adwords.v201708
+package com.bluekiri.google.adwords.v201806
 
 import org.apache.spark.sql.sources.DataSourceRegister
 

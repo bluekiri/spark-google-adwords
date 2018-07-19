@@ -1,14 +1,14 @@
-package com.bluekiri.google.adwords.v201708
+package com.bluekiri.google.adwords.v201806
 
 import java.util.zip.GZIPInputStream
-import javax.xml.parsers.DocumentBuilderFactory
 
 import com.google.api.ads.adwords.axis.factory.AdWordsServices
-import com.google.api.ads.adwords.axis.v201708.cm.{ReportDefinitionField, ReportDefinitionReportType, ReportDefinitionServiceInterface}
+import com.google.api.ads.adwords.axis.v201806.cm.{ReportDefinitionField, ReportDefinitionReportType, ReportDefinitionServiceInterface}
 import com.google.api.ads.adwords.lib.client.AdWordsSession
-import com.google.api.ads.adwords.lib.jaxb.v201708.DownloadFormat
-import com.google.api.ads.adwords.lib.utils.v201708.ReportDownloader
+import com.google.api.ads.adwords.lib.jaxb.v201806.DownloadFormat
+import com.google.api.ads.adwords.lib.utils.v201806.ReportDownloader
 import com.google.api.client.auth.oauth2.Credential
+import javax.xml.parsers.DocumentBuilderFactory
 
 class AdWordsClient(credential: Credential) {
 
